@@ -22,6 +22,12 @@ class RoleList(models.Model):
         return self.name
 
 
+"""
+http://www.jianshu.com/p/b993f4feff83
+UserCreationForm()
+UserChangeForm()
+adminset项目没有重写这两个方法，是没有扩展User Model的字段？
+"""
 class UserManager(BaseUserManager):
     def create_user(self,email,username,password=None):
         if not email:
