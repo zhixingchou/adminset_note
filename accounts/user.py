@@ -24,7 +24,7 @@ def login(request):
         form = LoginUserForm(request, data=request.POST)
         if form.is_valid():
             auth.login(request, form.get_user())
-            return HttpResponseRedirect(request.POST['next'])
+            return HttpResponseRedirect(request.POST['next'])   # 重定向；和redirect有区别，redirect更灵活
     else:
         form = LoginUserForm(request)
     kwargs = {

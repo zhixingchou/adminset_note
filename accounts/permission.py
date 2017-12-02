@@ -35,6 +35,7 @@ def permission_verify():
                     # by zhouzx
                     # https://simpleisbetterthancomplex.com/tips/2016/07/20/django-tip-7-how-to-get-the-current-url-within-a-django-template.html
                     # s.rstrip(rm)      删除s字符串中结尾处，位于 rm删除序列的字符
+                    # request.path ???
                     if request.path == x.url or request.path.rstrip('/') == x.url:
                         matchUrl.append(x.url)
                     # 判断request.path是否以permission表中的某一条url开头
