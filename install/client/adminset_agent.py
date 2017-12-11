@@ -118,6 +118,21 @@ def parser_cpu(stdout):
 
 """
 Popen shel=False 参数args是序列类型，第一个元素通常是可执行文件的路径；
+
+\n 换行符；
+\s 空白符；
+[a-z]{1} 匹配a-z字符，{1}匹配前面字符一次;
+pattern = re.compile(r'pattern')
+result = re.match(pattern, string)
+
+match函數從字符串的開始進行匹配；
+search函數並不是從字符串的開始處進行匹配，而是會查找整個字符串；
+
+re.group()/re.group(0)  整個匹配到的字符串;
+
+smartctl -i /dev/sd[1-z]{1}     确认硬盘是否打开了SMART支持；
+
+返回字典    {'/dev/sda': ('smartctl 6.2 2017-02-27 r4394 ........')}
 """
 def get_disk_info():
     ret = {}
@@ -135,13 +150,20 @@ def get_disk_info():
     return ret
 
 
+"""
+dict.keys()     字典(Dictionary) keys() 函数以列表返回一个字典所有的键；
+\d	匹配一个数字字符。等价于 [0-9]；
+\s	匹配任何空白字符，包括空格、制表符、换页符等等。等价于 [ \f\n\r\t\v]。
+{n} 匹配的重复次数；{2, 4} 的含义是最少重复 2 次、最多重复 4 次。
++	匹配前面的子表达式一次或多次。例如，'zo+' 能匹配 "zo" 以及 "zoo"，但不能匹配 "z"。+ 等价于 {1,}。
+"""
 def parser_disk_info(diskdata):
     pd = {}
     disknum = diskdata.keys()
     device_model = re.compile(r'(Device Model):(\s+.*)')
     serial_number = re.compile(r'(Serial Number):(\s+[\d\w]{1,30})')
     firmware_version = re.compile(r'(Firmware Version):(\s+[\w]{1,20})')
-    user_capacity = re.compile(r'(User Capacity):(\s+[\d,]{1,50})')
+    user_capacity = re.compile(r'(User Capacity):(\s+[\d,]{1,50})')     # 正则语法不熟悉？？
     for num in disknum:
         t = str(diskdata[num])
         for line in t.split('\n'):
