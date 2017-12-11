@@ -74,6 +74,15 @@ def parser_dmi(dmidata):
     return pd
 
 
+
+"""
+stdout=PIPE ，获取命令输出值
+communicate方法返回值(stdout, stderr)
+
+split() 指定分隔符对字符串进行切片；分隔符，默认为所有的空字符
+
+vmware分配实际内存不是整数G；
+"""
 def get_mem_total():
     cmd = "grep MemTotal /proc/meminfo"
     p = Popen(cmd, stdout=PIPE, shell = True)
@@ -106,6 +115,10 @@ def parser_cpu(stdout):
     return cpu_info
 
 
+
+"""
+Popen shel=False 参数args是序列类型，第一个元素通常是可执行文件的路径；
+"""
 def get_disk_info():
     ret = {}
     disk_dev = re.compile(r'Disk\s/dev/sd[a-z]{1}')
@@ -172,6 +185,9 @@ def asset_info():
     return json.dumps(data_info)
 
 
+"""
+osenv OS系统环境使用的语言（'en_US.UTF-8'）
+"""
 def asset_info_post():
     osenv = os.environ["LANG"]
     os.environ["LANG"] = "us_EN.UTF8"
