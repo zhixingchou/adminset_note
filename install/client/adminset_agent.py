@@ -100,10 +100,29 @@ def get_cpu_model():
 
 
 def get_cpu_cores():
-    cpu_cores = {"logical": psutil.cpu_count(logical=False), "physical": psutil.cpu_count()}
+    cpu_cores = {"physical": psutil.cpu_count(logical=False), "logical": psutil.cpu_count()}
     return cpu_cores
 
 
+"""
+[x for x in z]    构建List；
+
+stdout.split('\n\n')输出：
+['processor\t: 0\nvendor_id\t: GenuineIntel\n……]
+stdout.split('\n')：
+['processor\t: 0', 'vendor_id\t: GenuineIntel',……]
+
+-------cat /proc/cpuinfo-----
+processor  : 0
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+
+使用stdout.split('\n\n')按cpu核分割;
+
+[-2] 获取倒数第二个；
+"""
 def parser_cpu(stdout):
     groups = [i for i in stdout.split('\n\n')]
     group = groups[-2]
@@ -130,7 +149,7 @@ search函數並不是從字符串的開始處進行匹配，而是會查找整�
 
 re.group()/re.group(0)  整個匹配到的字符串;
 
-smartctl -i /dev/sd[1-z]{1}     确认硬盘是否打开了SMART支持；
+smartctl -i /dev/sd[1-z]{1}     确认硬盘是否打开了SMART支持；【docker linux 报错：使用smartctl -i /dev/sda -d megaraid,0】
 
 返回字典    {'/dev/sda': ('smartctl 6.2 2017-02-27 r4394 ........')}
 """
@@ -156,6 +175,9 @@ dict.keys()     字典(Dictionary) keys() 函数以列表返回一个字典所�
 \s	匹配任何空白字符，包括空格、制表符、换页符等等。等价于 [ \f\n\r\t\v]。
 {n} 匹配的重复次数；{2, 4} 的含义是最少重复 2 次、最多重复 4 次。
 +	匹配前面的子表达式一次或多次。例如，'zo+' 能匹配 "zo" 以及 "zoo"，但不能匹配 "z"。+ 等价于 {1,}。
+
+strip()函数:s.strip(rm)        删除s字符串中开头、结尾处，位于 rm删除序列的字符；当rm为空时，默认删除空白符（包括'\n', '\r',  '\t',  ' ')
+replace
 """
 def parser_disk_info(diskdata):
     pd = {}
@@ -167,8 +189,13 @@ def parser_disk_info(diskdata):
     for num in disknum:
         t = str(diskdata[num])
         for line in t.split('\n'):
+            # ('User Capacity', '        300,000,000,000')
             user = re.search(user_capacity,line)
             if user:
+                # user.group()[1]
+                #        300,000,000,000
+                # diskvo
+                # 300,000,000,000
                 diskvo = user.groups()[1].strip()
                 nums = int(diskvo.replace(',',''))
                 endnum = str(nums/1000/1000/1000)
